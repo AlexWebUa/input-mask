@@ -43,34 +43,40 @@ class Mask {
             this.input.selectionEnd = 0;
             this.input.onclick = null;
         };
-        this.input.oninput = event => this.keyPress(event);
+        if (!isMobile)
+            this.input.onkeydown = key => this.keyPress(key);
+        else
+            this.input.oninput = event => this.keyPress(event);
     }
 
 
     /* Обрабатывает все нажатия кнопок в инпуте */
     keyPress(event) {
         let key;
-        if (event.inputType === "deleteContentBackward") key = "Backspace";
-        else if (event.inputType === "deleteContentForward") key = "Delete";
-        else if (event.inputType === "insertText") key = event.data;
+        if (isMobile) {
+            if (event.inputType === "deleteContentBackward") key = "Backspace";
+            else if (event.inputType === "deleteContentForward") key = "Delete";
+            else if (event.inputType === "insertText") key = event.data;
+        } else
+            key = event.key;
 
-        if (this.isDecimal(key)) {
-            document.execCommand("undo"); // oninput не поддерживает event.preventDefault();
+        if (this.isDecimal(key)) { // Если цифра
+            isMobile ? document.execCommand("undo") : event.preventDefault();
             key = parseInt(key);
             this.typeDigit(key, this.input.selectionStart);
-        } else if (key === 'Backspace') {
-            document.execCommand("undo");
+        } else if (key === 'Backspace') { // Если бекспейс
+            isMobile ? document.execCommand("undo") : event.preventDefault();
             this.remove();
-        } else if (!this.oldFormat && (key === ' ' || key === '-')) {
-
-            if (this.input.selectionStart === 7 || this.input.selectionStart === 6) { // Должно быть 5 и 6, а не 6 и 7 !?
-                console.log("here");
-                document.execCommand("undo");
+        } else if (!this.oldFormat && (key === ' ' || key === '-')) { // Если пробел или минус
+            if (this.input.selectionStart === 5 || this.input.selectionStart === 6) {
+                isMobile ? document.execCommand("undo") : event.preventDefault();
                 if (this.minYear && this.minYear >= 0) this.inputShadow[6] = " ";
                 else this.inputShadow[6] = key;
                 this.render(7);
-            } else document.execCommand("undo");
-        } else {
+            } else isMobile ? document.execCommand("undo") : event.preventDefault();
+        } else if (!isMobile && key !== 'ArrowLeft' && key !== 'ArrowRight' && key !== 'Tab' && key !== 'F5') {
+            event.preventDefault();
+        } else if (isMobile) {
             document.execCommand("undo");
         }
     }
@@ -82,7 +88,7 @@ class Mask {
 
         if (this.inputShadow[index] !== this.splitter) {
             if (index === 0 && key < 4) {
-                if(key === 0 && this.inputShadow[index+1] === 0)
+                if (key === 0 && this.inputShadow[index + 1] === 0)
                     this.inputShadow[index] = null;
                 else
                     this.validate(key, index);
@@ -90,7 +96,7 @@ class Mask {
 
             if (index === 1) {
                 if (this.inputShadow[0] < 3) {
-                    if(key === 0 && this.inputShadow[index-1] === 0)
+                    if (key === 0 && this.inputShadow[index - 1] === 0)
                         this.inputShadow[index] = null;
                     else
                         this.validate(key, index);
@@ -100,7 +106,7 @@ class Mask {
             }
 
             if (index === 3 && key < 2) {
-                if(key === 0 && this.inputShadow[index+1] === 0)
+                if (key === 0 && this.inputShadow[index + 1] === 0)
                     this.inputShadow[index] = null;
                 else
                     this.validate(key, index);
@@ -174,7 +180,6 @@ class Mask {
                 } else if (mm && dd > this.monthRules[mm - 1]) {
                     this.inputShadow[index] = null;
                 } else if (!mm && dd > 31 || dd === "00") {
-                    console.log('nulllll')
                     this.inputShadow[index] = null;
                 } else {
                     this.render(index + 1);
@@ -314,7 +319,7 @@ class Mask {
         }
 
         this.isEmpty = this.checkEmpty()
-        if(this.isEmpty) this.render(0);
+        if (this.isEmpty) this.render(0);
     }
 
 
@@ -391,3 +396,17 @@ class Mask {
     }
 }
 
+/* Ручные тесты
+*
+* Chrome 85.0.4183.16 pass
+* Opera 69.0.3686.57 pass
+* Edge 83.0.478.61 pass
+* Firefox 78.0.2 pass
+* UCBrowser 7.0.185.1002 pass
+*
+* Mobile Chrome 83.0.4103.106 pass
+* Mobile Opera 58.2.2878.53403 pass
+* Mobile Firefox 68.10.1 fail(document.execCommand?)
+* Mobile UCBrowser 13.2.5.1300 fail(?)
+*
+* */
