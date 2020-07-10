@@ -6,6 +6,16 @@
           name="viewport">
     <meta content="ie=edge" http-equiv="X-UA-Compatible">
     <title>Document</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mocha/8.0.1/mocha.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mocha/8.0.1/mocha.js"></script>
+    <script>
+        mocha.setup('bdd');
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chai/4.2.0/chai.js"></script>
+    <script>
+        var assert = chai.assert;
+    </script>
 </head>
 <body>
 
@@ -26,6 +36,8 @@
     <button id="unmask_new">Unmask</button>
     <p>Converted date: <span id="unmaskedValue_new"></span></p>
 </div>
+
+<div id="mocha"></div>
 
 <script src="mask.js"></script>
 <script>
@@ -64,6 +76,10 @@
         let date_new = mask_new.getDate();
         if (date_new) document.getElementById("unmaskedValue_new").innerHTML = date_new.toString();
     });
+</script>
+<script src="tests.js"></script>
+<script>
+    mocha.run();
 </script>
 </body>
 </html>
