@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+          name="viewport">
+    <meta content="ie=edge" http-equiv="X-UA-Compatible">
+    <title>Document</title>
+</head>
+<body>
+
+<div class="old" style="display: inline-block; width: 39%; margin: 100px 5%">
+    <h2>Старая версия (с совместимостью чекбокса)</h2>
+    <p>От: <span id="min_old"></span>г., До: <span id="max_old"></span>г.</p>
+    <input spellcheck="false" id="dateInput_old" type="text">
+    <button id="unmask_old">Unmask</button>
+    <br>
+    <label>Before Christ <input id="bc_old" type="checkbox"></label>
+    <p>Converted date: <span id="unmaskedValue_old"></span></p>
+</div>
+
+<div class="new" style="display: inline-block; width: 39%; margin: 100px 5%">
+    <h2>Новая версия (с минусом)</h2>
+    <p>От: <span id="min_new"></span>г., До: <span id="max_new"></span>г.</p>
+    <input spellcheck="false" id="dateInput_new" type="text">
+    <button id="unmask_new">Unmask</button>
+    <p>Converted date: <span id="unmaskedValue_new"></span></p>
+</div>
+
+<script src="mask.js"></script>
+<script>
+    const bc_old = document.getElementById("bc_old");
+    const unmask_old = document.getElementById("unmask_old");
+    const mask_old = new Mask({inputId: "dateInput_old", oldFormat: true});
+    const min_old = document.getElementById("min_old");
+    const max_old = document.getElementById("max_old");
+
+    const unmask_new = document.getElementById("unmask_new");
+    const mask_new = new Mask({inputId: "dateInput_new", oldFormat: false, splitter: "/", placeholder: "DD/MM/ YYYY"});
+    const min_new = document.getElementById("min_new");
+    const max_new = document.getElementById("max_new");
+
+    min_old.innerHTML = mask_old.minYear;
+    max_old.innerHTML = mask_old.maxYear;
+    min_new.innerHTML = mask_new.minYear;
+    max_new.innerHTML = mask_new.maxYear;
+
+    // Заблочить чекбокс если маска нового формата, или там нельзя ввести даты до н.э.
+    if (!mask_old.oldFormat || (mask_old.minYear && mask_old.minYear > 0)) {
+        bc_old.disabled = true;
+    }
+
+    // Менять состояние старой маски при нажатии на чекбокс
+    bc_old.addEventListener("change", ev => {
+        mask_old.changeBC(ev.target.checked);
+    });
+
+    // Получить объект Date
+    unmask_old.addEventListener("click", () => {
+        let date_old = mask_old.getDate();
+        if (date_old) document.getElementById("unmaskedValue_old").innerHTML = date_old.toString();
+    });
+    unmask_new.addEventListener("click", () => {
+        let date_new = mask_new.getDate();
+        if (date_new) document.getElementById("unmaskedValue_new").innerHTML = date_new.toString();
+    });
+</script>
+</body>
+</html>
