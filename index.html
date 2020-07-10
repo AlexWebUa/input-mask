@@ -10,7 +10,7 @@
 <body>
 
 <div class="old" style="display: inline-block; width: 39%; margin: 100px 5%">
-    <h2>Старая версия (с совместимостью чекбокса)</h2>
+    <h2>Старая версия</h2>
     <p>От: <span id="min_old"></span>г., До: <span id="max_old"></span>г.</p>
     <input spellcheck="false" id="dateInput_old" type="text">
     <button id="unmask_old">Unmask</button>
@@ -20,14 +20,14 @@
 </div>
 
 <div class="new" style="display: inline-block; width: 39%; margin: 100px 5%">
-    <h2>Новая версия (с минусом)</h2>
+    <h2>Новая версия</h2>
     <p>От: <span id="min_new"></span>г., До: <span id="max_new"></span>г.</p>
     <input spellcheck="false" id="dateInput_new" type="text">
     <button id="unmask_new">Unmask</button>
     <p>Converted date: <span id="unmaskedValue_new"></span></p>
 </div>
 
-<h1 id="check"></h1>
+<h1 id="debug"></h1>
 
 <script>
     window.mobileCheck = function() {
@@ -37,6 +37,25 @@
     };
 
     window.isMobile = mobileCheck();
+
+
+    let nAgt = navigator.userAgent;
+    let browserName  = navigator.appName;
+    let nameOffset,verOffset;
+
+    if ((verOffset=nAgt.indexOf("OPR/"))!==-1)          browserName = "Opera"; // In Opera 15+, the true version is after "OPR/"
+    else if ((verOffset=nAgt.indexOf("Opera"))!==-1)    browserName = "Opera"; // In older Opera, the true version is after "Opera" or after "Version"
+    else if ((verOffset=nAgt.indexOf("MSIE"))!==-1)     browserName = "Microsoft Internet Explorer"; // In MSIE, the true version is after "MSIE" in userAgent
+    else if ((verOffset=nAgt.indexOf("Chrome"))!==-1)   browserName = "Chrome"; // In Chrome, the true version is after "Chrome"
+    else if ((verOffset=nAgt.indexOf("Safari"))!==-1)   browserName = "Safari"; // In Safari, the true version is after "Safari" or after "Version"
+    else if ((verOffset=nAgt.indexOf("Firefox"))!==-1)  browserName = "Firefox"; // In Firefox, the true version is after "Firefox"
+    // In most other browsers, "name/version" is at the end of userAgent
+    else if ( (nameOffset=nAgt.lastIndexOf(' ')+1) < (verOffset=nAgt.lastIndexOf('/')) ) {
+        browserName = nAgt.substring(nameOffset,verOffset);
+        if (browserName.toLowerCase()===browserName.toUpperCase()) {
+            browserName = navigator.appName;
+        }
+    }
 </script>
 <script src="mask.js"></script>
 <script>

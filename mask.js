@@ -63,6 +63,12 @@ class Mask {
         if (this.isDecimal(key)) { // Если цифра
             isMobile ? document.execCommand("undo") : event.preventDefault();
             key = parseInt(key);
+
+            /*if (isMobile && browserName === "Firefox") {
+                this.input.selectionStart--;
+                this.input.selectionEnd--;
+            }*/
+
             this.typeDigit(key, this.input.selectionStart);
         } else if (key === 'Backspace') { // Если бекспейс
             isMobile ? document.execCommand("undo") : event.preventDefault();
@@ -396,17 +402,23 @@ class Mask {
     }
 }
 
-/* Ручные тесты
+/* Ручные тесты 10/13
 *
-* Chrome 85.0.4183.16 pass
-* Opera 69.0.3686.57 pass
-* Edge 83.0.478.61 pass
-* Firefox 78.0.2 pass
-* UCBrowser 7.0.185.1002 pass
+* Chrome 85.0.4183.16 pass 68.58%
+* Firefox 78.0.2 pass 7.91%
+* Edge 83.0.478.61 pass 6.85%
+* Opera 69.0.3686.57 pass 1.27%
+* UCBrowser 7.0.185.1002 pass 0.37%
+* IE 11 fail 6.14%
+* 84.98% - 93,86%
 *
-* Mobile Chrome 83.0.4103.106 pass
-* Mobile Opera 58.2.2878.53403 pass
-* Mobile Firefox 68.10.1 fail(document.execCommand?)
-* Mobile UCBrowser 13.2.5.1300 fail(?)
+* Mobile Chrome 83.0.4103.106 pass 63.85%
+* Mobile Samsung Browser 3.20% pass
+* Mobile Opera 58.2.2878.53403 pass 0.50%
+* Mobile Edge pass 0.02%
+* Mobile Android browser pass 0.69%
+* Mobile UCBrowser 13.2.5.1300 fail 1.09% (Safari - 26.77%)
+* Mobile Firefox 68.10.1 fail 0.73%
+* 68.26% - 71,41%
 *
 * */
