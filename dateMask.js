@@ -1,6 +1,6 @@
 "use strict";
 
-class Mask {
+class DateMask {
     constructor(props) {
         this.init(props);
     }
@@ -17,6 +17,7 @@ class Mask {
             props.minYear ? this.minYear = props.minYear : this.minYear = -4000;
             props.maxYear ? this.maxYear = props.maxYear : this.maxYear = 3000;
             props.placeholder ? this.placeholder = props.placeholder : this.placeholder = "ДД.ММ.ГГГГ";
+            props.errorBlock ? this.errorBlock = props.errorBlock : this.errorBlock = null;
 
             if (this.oldFormat)
                 this.inputShadow = [null, null, this.splitter, null, null, this.splitter, null, null, null, null];
@@ -27,8 +28,12 @@ class Mask {
             this.isBC = false;
             this.isEmpty = true;
 
-            this.hangEvents();
-            this.render();
+            if (window.simplified) {
+                //do nothing
+            } else {
+                this.hangEvents();
+                this.render();
+            }
         } else {
             console.error("Неверный id тега");
         }
@@ -63,21 +68,15 @@ class Mask {
         if (this.isDecimal(key)) { // Если цифра
             isMobile ? document.execCommand("undo") : event.preventDefault();
             key = parseInt(key);
-
-            /*if (isMobile && browserName === "Firefox") {
-                this.input.selectionStart--;
-                this.input.selectionEnd--;
-            }*/
-
             this.typeDigit(key, this.input.selectionStart);
         } else if (key === 'Backspace') { // Если бекспейс
             isMobile ? document.execCommand("undo") : event.preventDefault();
             this.remove();
         } else if (!this.oldFormat && (key === ' ' || key === '-')) { // Если пробел или минус
-            if (this.input.selectionStart === 5 || this.input.selectionStart === 6) {
-                isMobile ? document.execCommand("undo") : event.preventDefault();
+            if (this.input.selectionStart === 7 || this.input.selectionStart === 6) {
                 if (this.minYear && this.minYear >= 0) this.inputShadow[6] = " ";
                 else this.inputShadow[6] = key;
+                isMobile ? document.execCommand("undo") : event.preventDefault();
                 this.render(7);
             } else isMobile ? document.execCommand("undo") : event.preventDefault();
         } else if (!isMobile && key !== 'ArrowLeft' && key !== 'ArrowRight' && key !== 'Tab' && key !== 'F5') {
@@ -378,47 +377,101 @@ class Mask {
         return new RegExp(/^\d+$/).test(element);
     }
 
+    /* Уведомить об ошибке */
+    displayError(message) {
+        if (this.errorBlock === null) {
+            let eb = document.createElement("span");
+            let id = "error_" + this.input.id;
+            eb.setAttribute("id", id);
+            eb.innerHTML = message;
+            eb.style.color = 'red';
+
+            this.input.after(eb);
+            this.errorBlock = document.getElementById(id);
+        } else this.errorBlock.innerHTML = message;
+    }
+
+    /* Удалить сообщение об ошибке */
+    clearError() {
+        if (this.errorBlock !== null) this.errorBlock.innerHTML = '';
+    }
 
     /* Переводит теневое представление в объект Date */
     getDate() {
-        if (!this.inputShadow.includes(null)) {
-            let dd = parseInt(this.inputShadow[0] * 10 + this.inputShadow[1]);
-            let mm = parseInt(this.inputShadow[3] * 10 + this.inputShadow[4]) - 1;
-            let yyyy;
-
-            if (this.oldFormat) {
-                yyyy = parseInt(this.inputShadow.slice(6, 10).join(''));
-                if (this.isBC) yyyy *= -1;
-            } else {
-                yyyy = parseInt(this.inputShadow.slice(6, 11).join(''));
+        if (window.simplified) {
+            let userInput = moment(this.input.value, 'DD.MM.Y', true);
+            this.clearError();
+            try {
+                if (userInput.isValid()) {
+                    this.clearError();
+                    let year = userInput.year();
+                    if (this.minYear <= year && year <= this.maxYear) {
+                        return userInput.toDate();
+                    } else this.displayError("Неверный год");
+                } else throw new SyntaxError()
+            } catch (e) {
+                let invalidAt = userInput.invalidAt();
+                switch (invalidAt) {
+                    case 0:
+                        this.displayError("Неверный год");
+                        break;
+                    case 1:
+                        this.displayError("Неверный месяц");
+                        break;
+                    case 2:
+                        this.displayError("Неверный день");
+                        break;
+                    default:
+                        this.displayError("Неверная дата");
+                        break;
+                }
             }
+        } else {
+            if (!this.inputShadow.indexOf(null) !== -1) {
+                let dd = parseInt(this.inputShadow[0] * 10 + this.inputShadow[1]);
+                let mm = parseInt(this.inputShadow[3] * 10 + this.inputShadow[4]) - 1;
+                let yyyy;
 
-            let date = new Date(yyyy, mm, dd);
-            if (yyyy < 100) date.setFullYear(yyyy);
-            return date;
+                if (this.oldFormat) {
+                    yyyy = parseInt(this.inputShadow.slice(6, 10).join(''));
+                    if (this.isBC) yyyy *= -1;
+                } else {
+                    yyyy = parseInt(this.inputShadow.slice(6, 11).join(''));
+                }
+
+                let date = new Date(yyyy, mm, dd);
+                if (yyyy < 100) date.setFullYear(yyyy);
+                return date;
+            }
         }
 
         return false; // Можно выбросить исключение исключение, или подсветить ошибку.
     }
 }
 
-/* Ручные тесты 10/13
+/* Ручные тесты 13/13
 *
 * Chrome 85.0.4183.16 pass 68.58%
 * Firefox 78.0.2 pass 7.91%
 * Edge 83.0.478.61 pass 6.85%
 * Opera 69.0.3686.57 pass 1.27%
 * UCBrowser 7.0.185.1002 pass 0.37%
-* IE 11 fail 6.14%
-* 84.98% - 93,86%
+* IE 11 pass 6.14%
 *
 * Mobile Chrome 83.0.4103.106 pass 63.85%
 * Mobile Samsung Browser 3.20% pass
 * Mobile Opera 58.2.2878.53403 pass 0.50%
 * Mobile Edge pass 0.02%
 * Mobile Android browser pass 0.69%
-* Mobile UCBrowser 13.2.5.1300 fail 1.09% (Safari - 26.77%)
-* Mobile Firefox 68.10.1 fail 0.73%
-* 68.26% - 71,41%
+* Mobile UCBrowser 13.2.5.1300 pass 1.09%
+* Mobile Firefox 68.10.1 pass 0.73%
+*
+* SAFARI? 3.72%
+* Mobile SAFARI? 26.77%
 *
 * */
+
+// TODO сделать инпут для времени
+// TODO скормить babel для IE
+// TODO упорядочить код, почистить комментарии
+// TODO последний раз проверить всё везде
