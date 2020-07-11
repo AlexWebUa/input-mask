@@ -377,6 +377,7 @@ class DateMask {
         return new RegExp(/^\d+$/).test(element);
     }
 
+
     /* Уведомить об ошибке */
     displayError(message) {
         if (this.errorBlock === null) {
@@ -391,10 +392,12 @@ class DateMask {
         } else this.errorBlock.innerHTML = message;
     }
 
+
     /* Удалить сообщение об ошибке */
     clearError() {
         if (this.errorBlock !== null) this.errorBlock.innerHTML = '';
     }
+
 
     /* Переводит теневое представление в объект Date */
     getDate() {
@@ -470,8 +473,3 @@ class DateMask {
 * Mobile SAFARI? 26.77%
 *
 * */
-
-// TODO сделать инпут для времени
-// TODO скормить babel для IE
-// TODO упорядочить код, почистить комментарии
-// TODO последний раз проверить всё везде

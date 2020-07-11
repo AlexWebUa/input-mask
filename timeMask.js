@@ -79,7 +79,6 @@ class TimeMask {
     /* Первичная проверка ввода */
     typeDigit(key, index) {
         this.isEmpty = false;
-        console.log(this.inputShadow);
 
         if (this.inputShadow[index] !== ":") {
             if (index === 0) {
@@ -241,7 +240,7 @@ class TimeMask {
                 let mm = parseInt(this.input.value[3]) * 10 + parseInt(this.input.value[4]);
                 let ss = 0;
                 if (this.allowSeconds) ss = parseInt(this.input.value[6]) * 10 + parseInt(this.input.value[7]);
-                alert(hh + ":" + mm + ":" + ss);
+                
                 let date = new Date();
                 date.setHours(parseInt(hh));
                 date.setMinutes(parseInt(mm));
@@ -288,7 +287,3 @@ class TimeMask {
 * Mobile SAFARI? 26.77%
 *
 * */
-
-// TODO скормить babel для IE
-// TODO упорядочить код, почистить комментарии
-// TODO последний раз проверить всё везде

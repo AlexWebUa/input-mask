@@ -57,7 +57,7 @@
 
     if (isMobile && (browserName === "UCBrowser" || browserName === "Firefox")) {
         window.simplified = true;
-        loadScript("moment.js", () => {
+        loadScript("moment.js", function () {
             // do something on load
         });
     }
@@ -66,70 +66,66 @@
 <script src="timeMask.js"></script>
 <script>
     /* Date inputs */
-    const bc_old = document.getElementById("bc_old");
-    const unmask_old = document.getElementById("unmask_old");
-    const mask_old = new DateMask({
+    var bc_old = document.getElementById("bc_old");
+    var unmask_old = document.getElementById("unmask_old");
+    var mask_old = new DateMask({
         inputId: "dateInput_old",
         oldFormat: true
     });
-    const min_old = document.getElementById("min_old");
-    const max_old = document.getElementById("max_old");
-
-    const unmask_new = document.getElementById("unmask_new");
-    const mask_new = new DateMask({
+    var min_old = document.getElementById("min_old");
+    var max_old = document.getElementById("max_old");
+    var unmask_new = document.getElementById("unmask_new");
+    var mask_new = new DateMask({
         inputId: "dateInput_new",
         oldFormat: false,
         splitter: "/",
         placeholder: "DD/MM/ YYYY"
     });
-    const min_new = document.getElementById("min_new");
-    const max_new = document.getElementById("max_new");
-
+    var min_new = document.getElementById("min_new");
+    var max_new = document.getElementById("max_new");
     min_old.innerHTML = mask_old.minYear;
     max_old.innerHTML = mask_old.maxYear;
     min_new.innerHTML = mask_new.minYear;
-    max_new.innerHTML = mask_new.maxYear;
+    max_new.innerHTML = mask_new.maxYear; // Заблочить чекбокс если маска нового формата, или там нельзя ввести даты до н.э.
 
-    // Заблочить чекбокс если маска нового формата, или там нельзя ввести даты до н.э.
-    if (!mask_old.oldFormat || (mask_old.minYear && mask_old.minYear > 0)) {
+    if (!mask_old.oldFormat || mask_old.minYear && mask_old.minYear > 0) {
         bc_old.disabled = true;
-    }
+    } // Менять состояние старой маски при нажатии на чекбокс
 
-    // Менять состояние старой маски при нажатии на чекбокс
-    bc_old.addEventListener("change", ev => {
+
+    bc_old.addEventListener("change", function (ev) {
         mask_old.changeBC(ev.target.checked);
-    });
+    }); // Получить объект Date
 
-    // Получить объект Date
-    unmask_old.addEventListener("click", () => {
-        let date_old = mask_old.getDate();
+    unmask_old.addEventListener("click", function () {
+        var date_old = mask_old.getDate();
         if (date_old) document.getElementById("unmaskedValue_old").innerHTML = date_old.toString();
     });
-    unmask_new.addEventListener("click", () => {
-        let date_new = mask_new.getDate();
+    unmask_new.addEventListener("click", function () {
+        var date_new = mask_new.getDate();
         if (date_new) document.getElementById("unmaskedValue_new").innerHTML = date_new.toString();
     });
-
-
     /* Time inputs */
-    const mask_timeSeconds = new TimeMask({inputId: "time_seconds", allowSeconds: true, placeholder: "ЧЧ:ММ:СС"});
-    const unmask_time_seconds = document.getElementById("unmask_time_seconds");
 
-    const mask_time = new TimeMask({inputId: "time", allowSeconds: false});
-    const unmask_time = document.getElementById("unmask_time");
-
-    unmask_time_seconds.addEventListener("click", () => {
-        let time_seconds = mask_timeSeconds.getDate();
-        if (time_seconds)
-            document.getElementById("unmaskedValue_time_seconds").innerHTML = time_seconds.getHours() + ":" + time_seconds.getMinutes() + ":" + time_seconds.getSeconds();
+    var mask_timeSeconds = new TimeMask({
+        inputId: "time_seconds",
+        allowSeconds: true,
+        placeholder: "ЧЧ:ММ:СС"
     });
-
-    unmask_time.addEventListener("click", () => {
-        let time = mask_time.getDate();
-        if (time)
-            document.getElementById("unmaskedValue_time").innerHTML = time.getHours() + ":" + time.getMinutes();
+    var unmask_time_seconds = document.getElementById("unmask_time_seconds");
+    var mask_time = new TimeMask({
+        inputId: "time",
+        allowSeconds: false
     });
-
+    var unmask_time = document.getElementById("unmask_time");
+    unmask_time_seconds.addEventListener("click", function () {
+        var time_seconds = mask_timeSeconds.getDate();
+        if (time_seconds) document.getElementById("unmaskedValue_time_seconds").innerHTML = time_seconds.getHours() + ":" + time_seconds.getMinutes() + ":" + time_seconds.getSeconds();
+    });
+    unmask_time.addEventListener("click", function () {
+        var time = mask_time.getDate();
+        if (time) document.getElementById("unmaskedValue_time").innerHTML = time.getHours() + ":" + time.getMinutes();
+    });
 </script>
 </body>
 </html>
