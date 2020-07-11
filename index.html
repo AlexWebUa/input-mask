@@ -27,6 +27,21 @@
     <p>Converted date: <span id="unmaskedValue_new"></span></p>
 </div>
 
+<div id="timeWrapper" style="width: 100%; margin-top: 100px">
+    <div style="display: inline-block; width: 39%; margin: 100px 5%;">
+        <h2>С секундами</h2>
+        <input spellcheck="false" placeholder="ЧЧ:ММ:СС" id="time_seconds" type="text">
+        <button id="unmask_time_seconds">Unmask</button>
+        <p>Converted time: <span id="unmaskedValue_time_seconds"></span></p>
+    </div>
+
+    <div style="display: inline-block; width: 39%; margin: 100px 5%;">
+        <h2>Без секунд</h2>
+        <input spellcheck="false" placeholder="ЧЧ:ММ" id="time" type="text">
+        <button id="unmask_time">Unmask</button>
+        <p>Converted time: <span id="unmaskedValue_time"></span></p>
+    </div>
+</div>
 
 
 <h2 id="debug"></h2>
@@ -48,7 +63,9 @@
     }
 </script>
 <script src="dateMask.js"></script>
+<script src="timeMask.js"></script>
 <script>
+    /* Date inputs */
     const bc_old = document.getElementById("bc_old");
     const unmask_old = document.getElementById("unmask_old");
     const mask_old = new DateMask({inputId: "dateInput_old", oldFormat: true});
@@ -84,6 +101,27 @@
         let date_new = mask_new.getDate();
         if (date_new) document.getElementById("unmaskedValue_new").innerHTML = date_new.toString();
     });
+
+
+    /* Time inputs */
+    const mask_timeSeconds = new TimeMask({inputId: "time_seconds", allowSeconds: true, placeholder: "ЧЧ:ММ:СС"});
+    const unmask_time_seconds = document.getElementById("unmask_time_seconds");
+
+    const mask_time = new TimeMask({inputId: "time", allowSeconds: false});
+    const unmask_time = document.getElementById("unmask_time");
+
+    unmask_time_seconds.addEventListener("click", () => {
+        let time_seconds = mask_timeSeconds.getDate();
+        if (time_seconds)
+            document.getElementById("unmaskedValue_time_seconds"). innerHTML = time_seconds.getHours() + ":" + time_seconds.getMinutes() + ":" + time_seconds.getSeconds();
+    });
+
+    unmask_time.addEventListener("click", () => {
+        let time = mask_time.getDate();
+        if (time)
+            document.getElementById("unmaskedValue_time"). innerHTML = time.getHours() + ":" + time.getMinutes() ;
+    });
+
 </script>
 </body>
 </html>
