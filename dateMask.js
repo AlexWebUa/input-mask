@@ -73,7 +73,10 @@ class DateMask {
             isMobile ? document.execCommand("undo") : event.preventDefault();
             this.remove();
         } else if (!this.oldFormat && (key === ' ' || key === '-')) { // Если пробел или минус
-            if (this.input.selectionStart === 7 || this.input.selectionStart === 6) {
+            if (
+                (!isMobile && (this.input.selectionStart === 5 || this.input.selectionStart === 6)) ||
+                (isMobile && (this.input.selectionStart === 6 || this.input.selectionStart === 7))
+            ) {
                 if (this.minYear && this.minYear >= 0) this.inputShadow[6] = " ";
                 else this.inputShadow[6] = key;
                 isMobile ? document.execCommand("undo") : event.preventDefault();

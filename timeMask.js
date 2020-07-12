@@ -10,15 +10,18 @@ class TimeMask {
     init(props) {
         if (props.inputId) {
             this.input = document.getElementById(props.inputId);
+
+            props.nullChar ? this.nullChar = props.nullChar : this.nullChar = "_";
+            props.splitter ? this.splitter = props.splitter : this.splitter = ":";
             props.allowSeconds ? this.allowSeconds = props.allowSeconds : this.allowSeconds = false;
             props.placeholder ? this.placeholder = props.placeholder : this.placeholder = "ЧЧ:ММ";
             props.errorBlock ? this.errorBlock = props.errorBlock : this.errorBlock = null;
 
             if (this.allowSeconds) {
-                this.inputShadow = [null, null, ":", null, null, ":", null, null];
+                this.inputShadow = [null, null, this.splitter, null, null, this.splitter, null, null];
                 this.placeholder = "ЧЧ:ММ:СС";
             } else {
-                this.inputShadow = [null, null, ":", null, null];
+                this.inputShadow = [null, null, this.splitter, null, null];
                 this.placeholder = "ЧЧ:ММ";
             }
 
@@ -80,7 +83,7 @@ class TimeMask {
     typeDigit(key, index) {
         this.isEmpty = false;
 
-        if (this.inputShadow[index] !== ":") {
+        if (this.inputShadow[index] !== this.splitter) {
             if (index === 0) {
                 if (key <= 2) {
                     if (key !== 2 || key === 2 && this.inputShadow[1] < 4)
@@ -140,7 +143,7 @@ class TimeMask {
         let index = start - 1;
 
         if (start === end && index >= 0) { // Удаление одного символа
-            if (this.inputShadow[index] !== ":") {
+            if (this.inputShadow[index] !== this.splitter) {
                 this.inputShadow[index] = null;
             } else {
                 this.input.selectionStart--;
@@ -153,7 +156,7 @@ class TimeMask {
         if (start !== end) { // Если выделено несколько цифр
             for (let i = start; i <= end - 1; i++) {
                 if (i < 0) i = 0;
-                if (this.inputShadow[i] !== ":") {
+                if (this.inputShadow[i] !== this.splitter) {
                     this.inputShadow[i] = null;
                 }
             }
@@ -171,6 +174,7 @@ class TimeMask {
 
         else {
             this.input.value = null;
+            /* Если нужно сделать маску вида ЧЧ:ММ:СС
             for (let i = 0; i < this.inputShadow.length; i++) {
                 if (this.inputShadow[i] === null) {
                     this.input.value +=
@@ -180,7 +184,8 @@ class TimeMask {
                 } else if (this.inputShadow[i] !== ":") {
                     this.input.value += this.inputShadow[i];
                 } else this.input.value += ":";
-            }
+            }*/
+            this.inputShadow.map(char => char === null ? this.input.value += this.nullChar : this.input.value += char); // Проходится по массиву и выводит на экран
         }
         this.input.selectionStart = index;
         this.input.selectionEnd = index;
@@ -190,7 +195,7 @@ class TimeMask {
     /* Проверяет пустой ли теневой массив */
     checkEmpty() {
         let etalon;
-        this.allowSeconds ? etalon = [null, null, ":", null, null, ":", null, null] : etalon = [null, null, ":", null, null];
+        this.allowSeconds ? etalon = [null, null, this.splitter, null, null, this.splitter, null, null] : etalon = [null, null, this.splitter, null, null];
 
         for (let i = 0; i < this.inputShadow.length; i++) {
             if (this.inputShadow[i] !== etalon[i]) return false;
