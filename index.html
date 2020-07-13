@@ -121,13 +121,13 @@
     unmask_time_seconds.addEventListener("click", () => {
         let time_seconds = mask_timeSeconds.getDate();
         if (time_seconds)
-            document.getElementById("unmaskedValue_time_seconds").innerHTML = time_seconds.getHours() + ":" + time_seconds.getMinutes() + ":" + time_seconds.getSeconds();
+            document.getElementById("unmaskedValue_time_seconds").innerHTML = time_seconds.toString();
     });
 
     unmask_time.addEventListener("click", () => {
         let time = mask_time.getDate();
         if (time)
-            document.getElementById("unmaskedValue_time").innerHTML = time.getHours() + ":" + time.getMinutes();
+            document.getElementById("unmaskedValue_time").innerHTML = time.toString();
     });
 
 </script>

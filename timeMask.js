@@ -232,7 +232,7 @@ class TimeMask {
 
 
     /* Переводит теневое представление в объект Date */
-    getDate() {
+    getDate(format = true) {
         if (window.simplified) {
             this.clearError();
             let isValid = false;
@@ -250,24 +250,40 @@ class TimeMask {
                 date.setHours(parseInt(hh));
                 date.setMinutes(parseInt(mm));
                 if (this.allowSeconds) date.setSeconds(parseInt(ss));
-                return date;
+                return format ? hh + this.splitter + mm + this.splitter + ss : date;
             } else this.displayError("Неверно введено время!");
         } else {
             if (!this.inputShadow.indexOf(null) !== -1) {
-                let hh = parseInt(this.inputShadow[0] * 10 + this.inputShadow[1]);
-                let mm = parseInt(this.inputShadow[3] * 10 + this.inputShadow[4]);
+                let hh = parseInt(this.inputShadow[0]) * 10 + parseInt(this.inputShadow[1]);
+                let mm = parseInt(this.inputShadow[3]) * 10 + parseInt(this.inputShadow[4]);
                 let ss = 0;
-                if (this.allowSeconds) ss = parseInt(this.inputShadow[6] * 10 + this.inputShadow[7]);
+                if (this.allowSeconds) ss = parseInt(this.inputShadow[6]) * 10 + parseInt(this.inputShadow[7]);
 
                 let date = new Date();
                 date.setHours(hh);
                 date.setMinutes(mm);
                 if (this.allowSeconds) date.setSeconds(ss);
-                return date;
+                return format ? hh + this.splitter + mm + (ss === 0 ? '' : this.splitter + ss) : date;
             }
         }
 
         return false; // Можно выбросить исключение исключение, или подсветить ошибку.
+    }
+
+    setDate(date) {
+        if (new RegExp(/(?:[01]\d|2[0-3]):(?:[0-5]\d):(?:[0-5]\d)/).test(date) ||
+            new RegExp(/^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/).test(date)
+        ) {
+            for (let i = 0; i < date.length; i ++) {
+                if (this.isDecimal(date[i]))
+                    this.inputShadow[i] = date[i];
+            }
+            this.isEmpty = false;
+            this.render(0);
+        } else {
+            console.error('Неверная дата');
+        }
+        this.render(0);
     }
 }
 

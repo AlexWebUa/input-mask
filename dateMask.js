@@ -403,7 +403,7 @@ class DateMask {
 
 
     /* Переводит теневое представление в объект Date */
-    getDate() {
+    getDate(format = true) {
         if (window.simplified) {
             let userInput = moment(this.input.value, 'DD.MM.Y', true);
             this.clearError();
@@ -412,7 +412,7 @@ class DateMask {
                     this.clearError();
                     let year = userInput.year();
                     if (this.minYear <= year && year <= this.maxYear) {
-                        return userInput.toDate();
+                        return format ? userInput : userInput.toDate();
                     } else this.displayError("Неверный год");
                 } else throw new SyntaxError()
             } catch (e) {
@@ -434,8 +434,8 @@ class DateMask {
             }
         } else {
             if (!this.inputShadow.indexOf(null) !== -1) {
-                let dd = parseInt(this.inputShadow[0] * 10 + this.inputShadow[1]);
-                let mm = parseInt(this.inputShadow[3] * 10 + this.inputShadow[4]) - 1;
+                let dd = parseInt(this.inputShadow[0]) * 10 + parseInt(this.inputShadow[1]);
+                let mm = parseInt(this.inputShadow[3]) * 10 + parseInt(this.inputShadow[4]) - 1;
                 let yyyy;
 
                 if (this.oldFormat) {
@@ -447,11 +447,25 @@ class DateMask {
 
                 let date = new Date(yyyy, mm, dd);
                 if (yyyy < 100) date.setFullYear(yyyy);
-                return date;
+                return format ? dd + this.splitter + mm + this.splitter + yyyy : date;
             }
         }
 
         return false; // Можно выбросить исключение исключение, или подсветить ошибку.
+    }
+
+    setDate(date) {
+        if (new RegExp(/^(0?[1-9]|[12][0-9]|3[01])[.](0?[1-9]|1[012])[.][ -]?\d{4}$/).test(date)) {
+            for (let i = 0; i < date.length; i ++) {
+                if (this.isDecimal(date[i]) || date[i] === ' ' || date[i] === '-')
+                    this.inputShadow[i] = date[i];
+            }
+            this.isEmpty = false;
+            this.render(0);
+        } else {
+            console.error('Неверная дата');
+        }
+        this.render(0);
     }
 }
 
