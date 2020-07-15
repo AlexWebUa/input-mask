@@ -102,11 +102,11 @@
 
     // Получить объект Date
     unmask_old.addEventListener("click", () => {
-        let date_old = mask_old.getDate();
+        let date_old = mask_old.getDate(true);
         if (date_old) document.getElementById("unmaskedValue_old").innerHTML = date_old.toString();
     });
     unmask_new.addEventListener("click", () => {
-        let date_new = mask_new.getDate();
+        let date_new = mask_new.getDate(true);
         if (date_new) document.getElementById("unmaskedValue_new").innerHTML = date_new.toString();
     });
 
@@ -119,13 +119,13 @@
     const unmask_time = document.getElementById("unmask_time");
 
     unmask_time_seconds.addEventListener("click", () => {
-        let time_seconds = mask_timeSeconds.getDate();
+        let time_seconds = mask_timeSeconds.getDate(true);
         if (time_seconds)
             document.getElementById("unmaskedValue_time_seconds").innerHTML = time_seconds.toString();
     });
 
     unmask_time.addEventListener("click", () => {
-        let time = mask_time.getDate();
+        let time = mask_time.getDate(true);
         if (time)
             document.getElementById("unmaskedValue_time").innerHTML = time.toString();
     });

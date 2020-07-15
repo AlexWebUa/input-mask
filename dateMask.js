@@ -433,21 +433,33 @@ class DateMask {
                 }
             }
         } else {
-            if (!this.inputShadow.indexOf(null) !== -1) {
+            if (this.inputShadow.indexOf(null) === -1) {
                 let dd = parseInt(this.inputShadow[0]) * 10 + parseInt(this.inputShadow[1]);
-                let mm = parseInt(this.inputShadow[3]) * 10 + parseInt(this.inputShadow[4]) - 1;
+                let mm = parseInt(this.inputShadow[3]) * 10 + parseInt(this.inputShadow[4]);
                 let yyyy;
 
                 if (this.oldFormat) {
-                    yyyy = parseInt(this.inputShadow.slice(6, 10).join(''));
-                    if (this.isBC) yyyy *= -1;
+                    yyyy = this.inputShadow.slice(6, 10).join('');
+                    if (this.isBC) yyyy = "-" + yyyy;
                 } else {
-                    yyyy = parseInt(this.inputShadow.slice(6, 11).join(''));
+                    yyyy = this.inputShadow.slice(6, 11).join('');
                 }
 
-                let date = new Date(yyyy, mm, dd);
-                if (yyyy < 100) date.setFullYear(yyyy);
-                return format ? dd + this.splitter + mm + this.splitter + yyyy : date;
+                let date;
+
+                if (format) {
+                    if (dd < 10) dd = "0" + dd;
+                    if (mm < 10) mm = "0" + mm;
+                    date = dd + this.splitter + mm + this.splitter + yyyy;
+                } else {
+                    dd = parseInt(dd);
+                    mm = parseInt(mm) - 1;
+                    yyyy = parseInt(yyyy);
+                    date = new Date(yyyy, mm, dd);
+                    if (yyyy < 100) date.setFullYear(yyyy);
+                }
+
+                return date;
             }
         }
 

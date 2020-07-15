@@ -243,27 +243,51 @@ class TimeMask {
 
                 let hh = parseInt(this.input.value[0]) * 10 + parseInt(this.input.value[1]);
                 let mm = parseInt(this.input.value[3]) * 10 + parseInt(this.input.value[4]);
-                let ss = 0;
+                let ss = "00";
                 if (this.allowSeconds) ss = parseInt(this.input.value[6]) * 10 + parseInt(this.input.value[7]);
-                
-                let date = new Date();
-                date.setHours(parseInt(hh));
-                date.setMinutes(parseInt(mm));
-                if (this.allowSeconds) date.setSeconds(parseInt(ss));
-                return format ? hh + this.splitter + mm + this.splitter + ss : date;
+
+                let date;
+
+                if(format) {
+                    if (hh < 10) hh = "0" + hh;
+                    if (mm < 10) mm = "0" + mm;
+                    if (ss < 10) ss = "0" + ss;
+
+                    date = hh + this.splitter + mm;
+                    if (this.allowSeconds) date += this.splitter + ss;
+                } else {
+                    date = new Date();
+                    date.setHours(hh);
+                    date.setMinutes(mm);
+                    if (this.allowSeconds) date.setSeconds(parseInt(ss));
+                }
+
+                return date;
             } else this.displayError("Неверно введено время!");
         } else {
-            if (!this.inputShadow.indexOf(null) !== -1) {
-                let hh = parseInt(this.inputShadow[0]) * 10 + parseInt(this.inputShadow[1]);
-                let mm = parseInt(this.inputShadow[3]) * 10 + parseInt(this.inputShadow[4]);
-                let ss = 0;
-                if (this.allowSeconds) ss = parseInt(this.inputShadow[6]) * 10 + parseInt(this.inputShadow[7]);
+            if (this.inputShadow.indexOf(null) === -1) {
+                let hh = parseInt(this.input.value[0]) * 10 + parseInt(this.input.value[1]);
+                let mm = parseInt(this.input.value[3]) * 10 + parseInt(this.input.value[4]);
+                let ss = "00";
+                if (this.allowSeconds) ss = parseInt(this.input.value[6]) * 10 + parseInt(this.input.value[7]);
 
-                let date = new Date();
-                date.setHours(hh);
-                date.setMinutes(mm);
-                if (this.allowSeconds) date.setSeconds(ss);
-                return format ? hh + this.splitter + mm + (ss === 0 ? '' : this.splitter + ss) : date;
+                let date;
+
+                if(format) {
+                    if (hh < 10) hh = "0" + hh;
+                    if (mm < 10) mm = "0" + mm;
+                    if (ss < 10) ss = "0" + ss;
+
+                    date = hh + this.splitter + mm;
+                    if (this.allowSeconds) date += this.splitter + ss;
+                } else {
+                    date = new Date();
+                    date.setHours(hh);
+                    date.setMinutes(mm);
+                    if (this.allowSeconds) date.setSeconds(parseInt(ss));
+                }
+
+                return date;
             }
         }
 
