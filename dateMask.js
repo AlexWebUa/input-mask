@@ -450,7 +450,7 @@ class DateMask {
                 if (format) {
                     if (dd < 10) dd = "0" + dd;
                     if (mm < 10) mm = "0" + mm;
-                    date = dd + this.splitter + mm + this.splitter + yyyy;
+                    date = dd + "." + mm + "." + yyyy;
                 } else {
                     dd = parseInt(dd);
                     mm = parseInt(mm) - 1;
