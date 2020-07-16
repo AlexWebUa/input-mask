@@ -469,8 +469,11 @@ class DateMask {
     setDate(date) {
         if (new RegExp(/^(0?[1-9]|[12][0-9]|3[01])[.](0?[1-9]|1[012])[.][ -]?\d{4}$/).test(date)) {
             for (let i = 0; i < date.length; i ++) {
-                if (this.isDecimal(date[i]) || date[i] === ' ' || date[i] === '-')
+                if (this.isDecimal(date[i])) {
+                    this.inputShadow[i] = parseInt(date[i]);
+                } else if (date[i] === ' ' || date[i] === '-') {
                     this.inputShadow[i] = date[i];
+                }
             }
             this.isEmpty = false;
             this.render(0);
