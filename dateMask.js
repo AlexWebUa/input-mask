@@ -1,12 +1,76 @@
 "use strict";
 
+class DateMask extends InputMask {
+    constructor(properties) {
+        super(properties);
+
+        properties.minYear ? this.minYear = properties.minYear : this.minYear = -4000;
+        properties.maxYear ? this.maxYear = properties.maxYear : this.maxYear = 3000;
+        properties.oldFormat ? this.oldFormat = properties.oldFormat : this.oldFormat = false;
+        properties.format ? this.format = properties.format : this.format = "ДД.ММ.ГГГГ";
+    }
+
+    hangEvents() {
+        super.hangEvents();
+    }
+
+    keyPress(event) {
+        super.keyPress(event);
+    }
+
+    insertText(char) {
+        //stub
+    }
+
+    delete() {
+        super.delete();
+    }
+
+    isValid(date) {
+        //stub
+    }
+
+    isEmpty() {
+        return super.isEmpty();
+    }
+
+    isNull(item) {
+        return super.isNull(item);
+    }
+
+    isUndefined(item) {
+        return super.isUndefined(item);
+    }
+
+    isDecimal(item) {
+        return super.isDecimal(item);
+    }
+
+    update(index) {
+        super.update(index);
+    }
+
+    getDate() {
+        //stub
+    }
+
+    setDate(date) {
+        //stub
+    }
+}
+
+
+
+/*
+"use strict";
+
 class DateMask {
     constructor(props) {
         this.init(props);
     }
 
 
-    /* Обрабатывает переданные свойства, и настраивает свойства по-умолчанию */
+    /!* Обрабатывает переданные свойства, и настраивает свойства по-умолчанию *!/
     init(props) {
         if (props.inputId) {
             this.input = document.getElementById(props.inputId);
@@ -41,7 +105,7 @@ class DateMask {
     }
 
 
-    /* Цепляет обработчики событий на объект */
+    /!* Цепляет обработчики событий на объект *!/
     hangEvents() {
         this.input.onclick = () => {
             this.input.selectionStart = 0;
@@ -55,7 +119,7 @@ class DateMask {
     }
 
 
-    /* Обрабатывает все нажатия кнопок в инпуте */
+    /!* Обрабатывает все нажатия кнопок в инпуте *!/
     keyPress(event) {
         let key;
         if (isMobile) {
@@ -90,7 +154,7 @@ class DateMask {
     }
 
 
-    /* Первичная проверка ввода */
+    /!* Первичная проверка ввода *!/
     typeDigit(key, index) {
         this.isEmpty = false;
 
@@ -149,7 +213,7 @@ class DateMask {
     }
 
 
-    /* Проверка по условиям */
+    /!* Проверка по условиям *!/
     validate(key, index) {
         this.inputShadow[index] = key; // Меняем цифру в теневом представлении
         let currentBlock = this.getCurrentBlock(index);
@@ -295,7 +359,7 @@ class DateMask {
     }
 
 
-    /* Обрабатывает бекспейс */
+    /!* Обрабатывает бекспейс *!/
     remove() {
         let start = this.input.selectionStart;
         let end = this.input.selectionEnd;
@@ -331,7 +395,7 @@ class DateMask {
     }
 
 
-    /* Отображает теневое представление в инпуте */
+    /!* Отображает теневое представление в инпуте *!/
     render(index) {
         if (this.isEmpty) this.input.value = this.placeholder;
         else {
@@ -343,7 +407,7 @@ class DateMask {
     }
 
 
-    /* Проверяет пустой ли теневой массив */
+    /!* Проверяет пустой ли теневой массив *!/
     checkEmpty() {
         let etalon;
         this.oldFormat ? etalon = [null, null, this.splitter, null, null, this.splitter, null, null, null, null] : etalon = [null, null, this.splitter, null, null, this.splitter, " ", null, null, null, null];
@@ -355,7 +419,7 @@ class DateMask {
     }
 
 
-    /* Старый переключатель даты до н.э. */
+    /!* Старый переключатель даты до н.э. *!/
     changeBC(value) {
         if (this.oldFormat) {
             this.isBC = value;
@@ -363,7 +427,7 @@ class DateMask {
     }
 
 
-    /* В каком разделе инпута курсос */
+    /!* В каком разделе инпута курсос *!/
     getCurrentBlock(index) {
         if (index === 0 || index === 1) {
             return 'day';
@@ -375,13 +439,13 @@ class DateMask {
     }
 
 
-    /* Число ли это */
+    /!* Число ли это *!/
     isDecimal(element) {
         return new RegExp(/^\d+$/).test(element);
     }
 
 
-    /* Уведомить об ошибке */
+    /!* Уведомить об ошибке *!/
     displayError(message) {
         if (this.errorBlock === null) {
             let eb = document.createElement("span");
@@ -396,13 +460,13 @@ class DateMask {
     }
 
 
-    /* Удалить сообщение об ошибке */
+    /!* Удалить сообщение об ошибке *!/
     clearError() {
         if (this.errorBlock !== null) this.errorBlock.innerHTML = '';
     }
 
 
-    /* Переводит теневое представление в объект Date */
+    /!* Переводит теневое представление в объект Date *!/
     getDate(format = true) {
         if (window.simplified) {
             let userInput = moment(this.input.value, 'DD.MM.Y', true);
@@ -484,7 +548,7 @@ class DateMask {
     }
 }
 
-/* Ручные тесты 13/13
+/!* Ручные тесты 13/13
 *
 * Chrome 85.0.4183.16 pass 68.58%
 * Firefox 78.0.2 pass 7.91%
@@ -504,4 +568,5 @@ class DateMask {
 * SAFARI? 3.72%
 * Mobile SAFARI? 26.77%
 *
-* */
+* *!/
+*/

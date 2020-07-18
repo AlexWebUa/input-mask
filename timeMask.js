@@ -1,12 +1,73 @@
 "use strict";
 
+class TimeMask extends InputMask {
+    constructor(properties) {
+        super(properties);
+
+        properties.allowSeconds ? this.allowSeconds = properties.allowSeconds : this.allowSeconds = false;
+        properties.format ? this.format = properties.format : this.format = "ЧЧ:ММ";
+    }
+
+
+    hangEvents() {
+        super.hangEvents();
+    }
+
+    keyPress(event) {
+        super.keyPress(event);
+    }
+
+    insertText(char) {
+        //stub
+    }
+
+    delete() {
+        super.delete();
+    }
+
+    isValid(date) {
+        //stub
+    }
+
+    isEmpty() {
+        return super.isEmpty();
+    }
+
+    isNull(item) {
+        return super.isNull(item);
+    }
+
+    isUndefined(item) {
+        return super.isUndefined(item);
+    }
+
+    isDecimal(item) {
+        return super.isDecimal(item);
+    }
+
+    update(index) {
+        super.update(index);
+    }
+
+    getDate() {
+        //stub
+    }
+
+    setDate(date) {
+        //stub
+    }
+}
+
+/*
+"use strict";
+
 class TimeMask {
     constructor(props) {
         this.init(props);
     }
 
 
-    /* Обрабатывает переданные свойства, и настраивает свойства по-умолчанию */
+    /!* Обрабатывает переданные свойства, и настраивает свойства по-умолчанию *!/
     init(props) {
         if (props.inputId) {
             this.input = document.getElementById(props.inputId);
@@ -40,7 +101,7 @@ class TimeMask {
     }
 
 
-    /* Цепляет обработчики событий на объект */
+    /!* Цепляет обработчики событий на объект *!/
     hangEvents() {
         this.input.onclick = () => {
             this.input.selectionStart = 0;
@@ -54,7 +115,7 @@ class TimeMask {
     }
 
 
-    /* Обрабатывает все нажатия кнопок в инпуте */
+    /!* Обрабатывает все нажатия кнопок в инпуте *!/
     keyPress(event) {
         let key;
         if (isMobile) {
@@ -79,7 +140,7 @@ class TimeMask {
     }
 
 
-    /* Первичная проверка ввода */
+    /!* Первичная проверка ввода *!/
     typeDigit(key, index) {
         this.isEmpty = false;
 
@@ -129,14 +190,14 @@ class TimeMask {
     }
 
 
-    /* Проверка по условиям */
+    /!* Проверка по условиям *!/
     validate(key, index) {
         this.inputShadow[index] = key; // Меняем цифру в теневом представлении
         this.render(index + 1);
     }
 
 
-    /* Обрабатывает бекспейс */
+    /!* Обрабатывает бекспейс *!/
     remove() {
         let start = this.input.selectionStart;
         let end = this.input.selectionEnd;
@@ -168,13 +229,13 @@ class TimeMask {
     }
 
 
-    /* Отображает теневое представление в инпуте */
+    /!* Отображает теневое представление в инпуте *!/
     render(index) {
         if (this.isEmpty) this.input.value = this.placeholder;
 
         else {
             this.input.value = null;
-            /* Если нужно сделать маску вида ЧЧ:ММ:СС
+            /!* Если нужно сделать маску вида ЧЧ:ММ:СС
             for (let i = 0; i < this.inputShadow.length; i++) {
                 if (this.inputShadow[i] === null) {
                     this.input.value +=
@@ -184,7 +245,7 @@ class TimeMask {
                 } else if (this.inputShadow[i] !== ":") {
                     this.input.value += this.inputShadow[i];
                 } else this.input.value += ":";
-            }*/
+            }*!/
             this.inputShadow.map(char => char === null ? this.input.value += this.nullChar : this.input.value += char); // Проходится по массиву и выводит на экран
         }
         this.input.selectionStart = index;
@@ -192,7 +253,7 @@ class TimeMask {
     }
 
 
-    /* Проверяет пустой ли теневой массив */
+    /!* Проверяет пустой ли теневой массив *!/
     checkEmpty() {
         let etalon;
         this.allowSeconds ? etalon = [null, null, this.splitter, null, null, this.splitter, null, null] : etalon = [null, null, this.splitter, null, null];
@@ -204,13 +265,13 @@ class TimeMask {
     }
 
 
-    /* Число ли это */
+    /!* Число ли это *!/
     isDecimal(element) {
         return new RegExp(/^\d+$/).test(element);
     }
 
 
-    /* Уведомить об ошибке */
+    /!* Уведомить об ошибке *!/
     displayError(message) {
         if (this.errorBlock === null) {
             let eb = document.createElement("span");
@@ -225,13 +286,13 @@ class TimeMask {
     }
 
 
-    /* Удалить сообщение об ошибке */
+    /!* Удалить сообщение об ошибке *!/
     clearError() {
         if (this.errorBlock !== null) this.errorBlock.innerHTML = '';
     }
 
 
-    /* Переводит теневое представление в объект Date */
+    /!* Переводит теневое представление в объект Date *!/
     getDate(format = true) {
         if (window.simplified) {
             this.clearError();
@@ -311,7 +372,7 @@ class TimeMask {
     }
 }
 
-/* Ручные тесты 13/13
+/!* Ручные тесты 13/13
 *
 * Chrome 85.0.4183.16 pass 68.58%
 * Firefox 78.0.2 pass 7.91%
@@ -331,4 +392,5 @@ class TimeMask {
 * SAFARI? 3.72%
 * Mobile SAFARI? 26.77%
 *
-* */
+* *!/
+*/
