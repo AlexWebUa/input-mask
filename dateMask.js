@@ -1,5 +1,16 @@
 "use strict";
 
+/**
+ * Маска даты
+ *
+ * @extends InputMask
+ * @property {number} minYear Минимально допустимый год
+ * @property {number} maxYear Максимально допустимый год
+ * @property {boolean} oldFormat
+ * @property {String} format Формат и плейсхолдер маски
+ * @property {String} currentValue Текущее валидное значение поля
+ *
+ */
 class DateMask extends InputMask {
     constructor(properties) {
         super(properties);
@@ -8,6 +19,10 @@ class DateMask extends InputMask {
         properties.maxYear ? this.maxYear = properties.maxYear : this.maxYear = 3000;
         properties.oldFormat ? this.oldFormat = properties.oldFormat : this.oldFormat = false;
         properties.format ? this.format = properties.format : this.format = "ДД.ММ.ГГГГ";
+
+        this.currentValue = this.format;
+        this.monthRules = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+        this.update(0);
     }
 
     hangEvents() {
@@ -19,7 +34,32 @@ class DateMask extends InputMask {
     }
 
     insertText(char) {
-        //stub
+        let index = this.input.selectionStart - 1;
+        if (index >= 0 && index < this.format.length) {
+            let currentChar = this.format[index].toLowerCase();
+
+            if (isDecimal(char)) {
+                //TODO: control the input
+                if (currentChar === 'д' || currentChar === 'м' || currentChar === 'г') {
+                    this.currentValue = this.currentValue.replaceAt(index, char);
+                    this.update(index+1);
+                }
+                if (currentChar === this.format[2]) {
+                    this.update(this.input.selectionStart + 1);
+                    this.insertText(char);
+                }
+            }
+
+            else if (char === this.format[2] && currentChar === this.format[2]) {
+                this.update(this.input.selectionStart);
+            }
+
+            else {
+                this.update(index);
+            }
+        } else {
+            this.update(index);
+        }
     }
 
     delete() {
@@ -27,23 +67,26 @@ class DateMask extends InputMask {
     }
 
     isValid(date) {
-        //stub
+        if (new RegExp(/^(0?[1-9]|[12][0-9]|3[01])[./\-\\](0?[1-9]|1[012])[./\-\\][ -]?\d{4}$/).test(date)) {
+            let dd = parseInt(date.substring(0,2));
+            let mm = parseInt(date.substring(3,5));
+            let yyyy = parseInt(date.substring(6));
+
+            if (dd > 31) return false;
+            if (mm > 12) return false
+            if (this.minYear > yyyy || this.maxYear < yyyy) return false;
+            if (dd === 29 && mm === 2) {
+                if (yyyy%4 !== 0) return false; // 29 февраля в невысокосный год
+            }
+            else if (dd > this.monthRules[mm - 1]) return false;
+
+            return true;
+        }
+        else return false;
     }
 
     isEmpty() {
         return super.isEmpty();
-    }
-
-    isNull(item) {
-        return super.isNull(item);
-    }
-
-    isUndefined(item) {
-        return super.isUndefined(item);
-    }
-
-    isDecimal(item) {
-        return super.isDecimal(item);
     }
 
     update(index) {
@@ -51,15 +94,26 @@ class DateMask extends InputMask {
     }
 
     getDate() {
-        //stub
+        let date = this.currentValue;
+        if ( this.isValid(date) ) {
+            let dd = date.substring(0,2);
+            let mm = date.substring(3,5);
+            let yyyy = date.substring(6);
+
+            return dd + "." + mm + "." + yyyy;
+        }
+        else return false;
     }
 
     setDate(date) {
-        //stub
+        if( this.isValid(date) ) {
+            //TODO: finish method
+        }
+        else throw new Error("Введена неверная дата");
     }
 }
 
-
+//TODO: add minus dates support
 
 /*
 "use strict";
@@ -531,7 +585,7 @@ class DateMask {
     }
 
     setDate(date) {
-        if (new RegExp(/^(0?[1-9]|[12][0-9]|3[01])[.](0?[1-9]|1[012])[.][ -]?\d{4}$/).test(date)) {
+        if (new RegExp(/^(0?[1-9]|[12][0-9]|3[01])\.(0?[1-9]|1[012])\.[ -]?\d{4}$/).test(date)) {
             for (let i = 0; i < date.length; i ++) {
                 if (this.isDecimal(date[i])) {
                     this.inputShadow[i] = parseInt(date[i]);

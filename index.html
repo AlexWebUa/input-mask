@@ -9,7 +9,30 @@
 </head>
 <body>
 
+<div class="date">
+    <h2>Date</h2>
+    <input id="dateInput" type="text">
+    <button id="dateButton">Unmask</button>
+    <p>Date: <span id="dateResult"></span></p>
+</div>
+
+<br>
+
+<div class="time">
+    <h2>Time</h2>
+    <input id="timeInput" type="text">
+    <button id="timeButton">Unmask</button>
+    <p>Date: <span id="timeResult"></span></p>
+</div>
+
+<script src="utils.js"></script>
+<script src="inputMask.js"></script>
 <script src="dateMask.js"></script>
 <script src="timeMask.js"></script>
+<script>
+    const dateMask = new DateMask({
+        id: "dateInput"
+    })
+</script>
 </body>
 </html>

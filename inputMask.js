@@ -1,9 +1,20 @@
 "use strict";
 
+/**
+ * Абстрактный класс маски инпута
+ *
+ * @property {String} id ID инпута
+ */
 class InputMask {
+    /**
+     * Задаёт общие поля для масок
+     *
+     * @param {object} properties
+     * @throws {Error} Если не указан id поля
+     */
     constructor(properties) {
         if (properties.id) {
-            this.input = document.getElementById(properties.inputId);
+            this.input = document.getElementById(properties.id);
             properties.format ? this.format = properties.format : null;
 
             this.currentValue = this.format;
@@ -14,6 +25,9 @@ class InputMask {
         }
     }
 
+    /**
+     * Вешает обработчики событий на объект
+     */
     hangEvents() {
         this.input.onclick = () => {
             this.input.selectionStart = 0;
@@ -23,6 +37,11 @@ class InputMask {
         this.input.oninput = event => this.keyPress(event);
     }
 
+    /**
+     * Определяет нажатую клавишу, и вызывает соответствующий обработчик
+     *
+     * @param {Event} event
+     */
     keyPress(event) {
         if (event.inputType === "deleteContentBackward") {
             this.delete();
@@ -35,59 +54,66 @@ class InputMask {
         }
     }
 
-    insertText(char) {
-        //stub
-    }
+    /**
+     * Определяет поведение маски при вводе любого символа
+     *
+     * @param {String} char
+     */
+    insertText(char) {}
 
+    /**
+     * Определяет поведение маски при нажатии "Backspace"
+     * TODO: remake for "Delete" button
+     */
     delete() {
-        let start = this.input.selectionStart;
-        let end = this.input.selectionEnd;
-        let index = start - 1;
+        let index = this.input.selectionStart;
 
-        if (start === end && index >= 0) { // Удаление одного символа
-            this.currentValue[index] = this.format[index];
+        if (index > 0) {
+            this.currentValue = this.currentValue.replaceAt(index, this.format[index]);
             this.update(index);
         }
-
-        if (start !== end) { // Удаление выделения
-            for (let i = start; i < end; i++) {
-                this.currentValue[i] = this.format[i];
-            }
-            this.update(start);
-        }
+        this.update(index);
     }
 
-    isValid(date) {
-        //stub
-    }
+    /**
+     * Валидирует дату
+     *
+     * @param {String} date
+     * @return {boolean}
+     */
+    isValid(date) {}
 
+    /**
+     * Проверяет введено ли что-то в инпут
+     *
+     * @return {boolean}
+     */
     isEmpty() {
         return this.input.value === this.format;
     }
 
-    isNull(item) {
-        return item === null;
-    }
-
-    isUndefined(item) {
-        return item === undefined;
-    }
-
-    isDecimal(item) {
-        return new RegExp(/^\d+$/).test(item);
-    }
-
+    /**
+     * Обновляет содержимое инпута
+     *
+     * @param {number} index Куда встанет курсор после обновления
+     */
     update(index) {
         this.input.value = this.currentValue;
         this.input.selectionStart = index;
         this.input.selectionEnd = index;
     }
 
-    getDate() {
-        //stub
-    }
+    /**
+     * Возвращает дату в формате "ДД.ММ.ГГГГ"
+     *
+     * @return {String|boolean}
+     */
+    getDate() {}
 
-    setDate(date) {
-        //stub
-    }
+    /**
+     * Устанавливает значение инпута
+     *
+     * @param date Дата в формате "ДД.ММ.ГГГГ"
+     */
+    setDate(date) {}
 }

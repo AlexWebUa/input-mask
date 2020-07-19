@@ -33,18 +33,6 @@ class TimeMask extends InputMask {
         return super.isEmpty();
     }
 
-    isNull(item) {
-        return super.isNull(item);
-    }
-
-    isUndefined(item) {
-        return super.isUndefined(item);
-    }
-
-    isDecimal(item) {
-        return super.isDecimal(item);
-    }
-
     update(index) {
         super.update(index);
     }
