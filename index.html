@@ -32,7 +32,13 @@
 <script>
     const dateMask = new DateMask({
         id: "dateInput"
-    })
+    });
+    const dateButton = document.getElementById("dateButton");
+    const dateResult = document.getElementById("dateResult");
+
+    dateButton.addEventListener("click", function () {
+        dateResult.innerHTML = dateMask.getDate() ? dateMask.getDate() : '';
+    });
 </script>
 </body>
 </html>

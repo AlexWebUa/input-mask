@@ -37,12 +37,22 @@ class DateMask extends InputMask {
         let index = this.input.selectionStart - 1;
         if (index >= 0 && index < this.format.length) {
             let currentChar = this.format[index].toLowerCase();
-
             if (isDecimal(char)) {
-                //TODO: control the input
                 if (currentChar === 'д' || currentChar === 'м' || currentChar === 'г') {
-                    this.currentValue = this.currentValue.replaceAt(index, char);
-                    this.update(index+1);
+                    let correct = true;
+                    switch (currentChar) {
+                        case "д": correct = this.controlDays(parseInt(char), index); break;
+                        case "м": correct = this.controlMonths(parseInt(char), index); break;
+                        case "г": correct = this.controlYears(parseInt(char), index); break;
+                    }
+
+                    if(correct) {
+                        this.currentValue = this.currentValue.replaceAt(index, char);
+                        this.update(index+1);
+                    }
+                    else {
+                        this.update(index);
+                    }
                 }
                 if (currentChar === this.format[2]) {
                     this.update(this.input.selectionStart + 1);
@@ -60,6 +70,122 @@ class DateMask extends InputMask {
         } else {
             this.update(index);
         }
+    }
+
+    controlDays(digit, index) {
+        let dd;
+        let mm = this.getMonths();
+        let yyyy = this.getYears();
+
+
+        if (index === 0) {
+            if (digit > 3) return false;
+            dd = isDecimal(digit + this.currentValue[1]) ? digit + this.currentValue[1] : false;
+        }
+        else if (index === 1) {
+            dd = isDecimal(this.currentValue[0] + digit) ? this.currentValue[0] + digit : false;
+        }
+
+        if (dd) {
+            if (dd === "00") {
+                let ddMax = "01";
+                this.currentValue = this.currentValue.replaceAt(0, ddMax[0]);
+                this.currentValue = this.currentValue.replaceAt(1, ddMax[1]);
+                return false;
+            }
+            else if (dd === "29" && mm === "02" && (yyyy && yyyy%4 !== 0)) return false;
+            else if (mm && dd > this.monthRules[mm - 1]) {
+                let ddMax = "" + this.monthRules[mm - 1];
+                this.currentValue = this.currentValue.replaceAt(0, ddMax[0]);
+                this.currentValue = this.currentValue.replaceAt(1, ddMax[1]);
+                return false;
+            }
+            else if (dd > 31) {
+                let ddMax = "31";
+                this.currentValue = this.currentValue.replaceAt(0, ddMax[0]);
+                this.currentValue = this.currentValue.replaceAt(1, ddMax[1]);
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    controlMonths(digit, index) {
+        let dd = this.getDays();
+        let mm;
+        let yyyy = this.getYears();
+
+        if (index === 3) {
+            if (digit > 1) return false;
+            mm = isDecimal(digit + this.currentValue[4]) ? digit + this.currentValue[4] : false;
+        }
+        else if (index === 4) {
+            mm = isDecimal(this.currentValue[3] + digit) ? this.currentValue[3] + digit : false;
+        }
+
+        if(mm) {
+            if (mm === "00") {
+                let mmMax = "01";
+                this.currentValue = this.currentValue.replaceAt(3, mmMax[0]);
+                this.currentValue = this.currentValue.replaceAt(4, mmMax[1]);
+                return false;
+            }
+            else if (dd && dd === "29" && mm === "02" && (yyyy && yyyy%4 !== 0)) {
+                let ddMax = "28";
+                this.currentValue = this.currentValue.replaceAt(0, ddMax[0]);
+                this.currentValue = this.currentValue.replaceAt(1, ddMax[1]);
+                return false;
+            }
+            else if (dd && dd > this.monthRules[mm - 1]) {
+                let ddMax = "" + this.monthRules[mm-1];
+                this.currentValue = this.currentValue.replaceAt(0, ddMax[0]);
+                this.currentValue = this.currentValue.replaceAt(1, ddMax[1]);
+            }
+            else if (mm > 12) {
+                let mmMax = "12";
+                this.currentValue = this.currentValue.replaceAt(3, mmMax[0]);
+                this.currentValue = this.currentValue.replaceAt(4, mmMax[1]);
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    controlYears(digit, index) {
+        //TODO: double-check this function
+        let yyyy;
+
+        if (index === 6) {
+            yyyy = digit + this.currentValue[7] + this.currentValue[8] + this.currentValue[9];
+            yyyy = isDecimal(yyyy) ? yyyy : false;
+        }
+        else if (index === 7) {
+            yyyy = this.currentValue[6] + digit + this.currentValue[8] + this.currentValue[9];
+            yyyy = isDecimal(yyyy) ? yyyy : false;
+        }
+        else if (index === 8) {
+            yyyy = this.currentValue[6] + this.currentValue[7] + digit + this.currentValue[9];
+            yyyy = isDecimal(yyyy) ? yyyy : false;
+        }
+        else if (index === 9) {
+            yyyy = this.currentValue[6] + this.currentValue[7] + this.currentValue[8] + digit;
+            yyyy = isDecimal(yyyy) ? yyyy : false;
+        }
+        if (yyyy < this.minYear) {
+            //TODO: add minus support here
+        }
+        else if (yyyy > this.maxYear) {
+            let yyyyMax = "" + this.maxYear;
+            this.currentValue = this.currentValue.replaceAt(6, yyyyMax[0]);
+            this.currentValue = this.currentValue.replaceAt(7, yyyyMax[1]);
+            this.currentValue = this.currentValue.replaceAt(8, yyyyMax[2]);
+            this.currentValue = this.currentValue.replaceAt(9, yyyyMax[3]);
+            return false;
+        }
+
+        return true;
     }
 
     delete() {
@@ -105,9 +231,35 @@ class DateMask extends InputMask {
         else return false;
     }
 
+    getDays() {
+        let d1 = this.currentValue[0];
+        let d2 = this.currentValue[1];
+        if (isDecimal(d1) && isDecimal(d2)) return d1 + "" + d2;
+        return false;
+    }
+
+    getMonths() {
+        let m1 = this.currentValue[3];
+        let m2 = this.currentValue[4];
+        if (isDecimal(m1) && isDecimal(m2)) return m1 + "" + m2;
+        return false;
+    }
+
+    getYears() {
+        let y1 = this.currentValue[6];
+        let y2 = this.currentValue[7];
+        let y3 = this.currentValue[8];
+        let y4 = this.currentValue[9];
+        if (isDecimal(y1) && isDecimal(y2) && isDecimal(y3) && isDecimal(y4))
+            return "" + y1 + y2 + y4 + y4;
+        return false;
+    }
+
     setDate(date) {
         if( this.isValid(date) ) {
-            //TODO: finish method
+            this.currentValue = date;
+            this.update(0);
+            return true;
         }
         else throw new Error("Введена неверная дата");
     }
@@ -290,6 +442,9 @@ class DateMask {
             }
         }
 
+
+
+
         // Проверяем только что добавленную цифру
         if (currentBlock === 'day') {
             if (dd) {
@@ -313,7 +468,10 @@ class DateMask {
             } else {
                 this.render(index + 1);
             }
-        } else if (currentBlock === 'month') {
+        }
+
+
+        else if (currentBlock === 'month') {
             if (mm) {
                 if (dd === 29 && mm === 2) {
                     if (yyyy && yyyy % 4 === 0) { // Проверка на 29 февраля в НЕвысокосный год
@@ -335,7 +493,10 @@ class DateMask {
             } else {
                 this.render(index + 1);
             }
-        } else if (currentBlock === 'year') {
+        }
+
+
+        else if (currentBlock === 'year') {
             if (yyyy) {
                 if (dd === 29 && mm === 2 && yyyy % 4 === 0) { // Проверка на 29 февраля в НЕвысокосный год
                     this.render(index + 1);
@@ -410,6 +571,10 @@ class DateMask {
                 this.render(index + 1);
             }
         }
+
+
+
+
     }
 
 

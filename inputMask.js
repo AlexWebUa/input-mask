@@ -63,12 +63,16 @@ class InputMask {
 
     /**
      * Определяет поведение маски при нажатии "Backspace"
-     * TODO: remake for "Delete" button
      */
     delete() {
+        //TODO: не работате удаление выделенной части
         let index = this.input.selectionStart;
 
-        if (index > 0) {
+        if(this.input.value === "") {
+            this.currentValue = this.format;
+            this.update(0);
+        }
+        if (index >= 0) {
             this.currentValue = this.currentValue.replaceAt(index, this.format[index]);
             this.update(index);
         }
