@@ -65,16 +65,29 @@ class InputMask {
      * Определяет поведение маски при нажатии "Backspace"
      */
     delete() {
-        //TODO: не работате удаление выделенной части
+        //TODO: make selection delete
         let index = this.input.selectionStart;
 
         if(this.input.value === "") {
-            this.currentValue = this.format;
+            if (this.format.indexOf("-") !== -1) {
+                this.format = this.format.deleteAt(-4);
+                this.currentValue = this.format;
+            }
+            else {
+                this.currentValue = this.format;
+            }
             this.update(0);
         }
         if (index >= 0) {
-            this.currentValue = this.currentValue.replaceAt(index, this.format[index]);
-            this.update(index);
+            if (this.currentValue[index] === "-") {
+                this.format = this.format.deleteAt(-4);
+                this.currentValue = this.currentValue.deleteAt(-4);
+                this.update(index)
+            }
+            else {
+                this.currentValue = this.currentValue.replaceAt(index, this.format[index]);
+                this.update(index);
+            }
         }
         this.update(index);
     }
@@ -108,8 +121,6 @@ class InputMask {
     }
 
     /**
-     * Возвращает дату в формате "ДД.ММ.ГГГГ"
-     *
      * @return {String|boolean}
      */
     getDate() {}
@@ -117,7 +128,7 @@ class InputMask {
     /**
      * Устанавливает значение инпута
      *
-     * @param date Дата в формате "ДД.ММ.ГГГГ"
+     * @param date
      */
     setDate(date) {}
 }

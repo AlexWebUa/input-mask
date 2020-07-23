@@ -1,12 +1,33 @@
 /**
  * Заменяет подстроку replacement в строке начиная с символа index
  *
- * @param {number} index С какого симвлоа начнётся замена
- * @param {String} replacement Подстрока, котрая будет вставлена
- * @return {String}
+ * @param {number} index
+ * @param {String} replacement
+ * @return {String} Полученная строка
  */
 String.prototype.replaceAt = function(index, replacement) {
     return this.slice(0, index) + replacement + this.slice(index + replacement.length);
+}
+
+/**
+ * Вставляет подстроку insertion в строку на место index
+ *
+ * @param {number} index
+ * @param {String} insertion
+ * @return {string} Полученная строка
+ */
+String.prototype.insertAt = function(index, insertion) {
+    return this.slice(0, index) + insertion + this.slice(index);
+}
+
+/**
+ * Удаляет символ в указанном месте строки
+ *
+ * @param index
+ * @return {string} Полученная строка
+ */
+String.prototype.deleteAt = function(index) {
+    return this.slice(0, index - 1) + this.slice(index);
 }
 
 

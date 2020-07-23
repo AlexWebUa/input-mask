@@ -35,9 +35,19 @@
     });
     const dateButton = document.getElementById("dateButton");
     const dateResult = document.getElementById("dateResult");
-
     dateButton.addEventListener("click", function () {
         dateResult.innerHTML = dateMask.getDate() ? dateMask.getDate() : '';
+    });
+
+
+    const timeMask = new TimeMask({
+       id: "timeInput",
+        format: "ЧЧ:ММ:СС"
+    });
+    const timeButton = document.getElementById("timeButton");
+    const timeResult = document.getElementById("timeResult");
+    timeButton.addEventListener("click", function () {
+        timeResult.innerHTML = timeMask.getDate() ? timeMask.getDate() : '';
     });
 </script>
 </body>
