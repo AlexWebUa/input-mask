@@ -38,12 +38,16 @@ class DateMask extends InputMask {
         if (index >= 0 && index < this.format.length) {
             let currentChar = this.format[index].toLowerCase();
             if (isDecimal(char)) {
-                if (currentChar === 'д' || currentChar === 'м' || currentChar === 'г') {
+                if (currentChar === 'д' || currentChar === 'м' || currentChar === 'г' ||
+                    currentChar === 'd' || currentChar === 'm' || currentChar === 'y') {
                     let correct = true;
                     switch (currentChar) {
-                        case "д": correct = this.controlDays(parseInt(char), index); break;
-                        case "м": correct = this.controlMonths(parseInt(char), index); break;
-                        case "г": correct = this.controlYears(parseInt(char), index); break;
+                        case "д": case "d":
+                            correct = this.controlDays(parseInt(char), index); break;
+                        case "м": case "m":
+                            correct = this.controlMonths(parseInt(char), index); break;
+                        case "г": case "y":
+                            correct = this.controlYears(parseInt(char), index); break;
                     }
 
                     if(correct) {
@@ -108,7 +112,13 @@ class DateMask extends InputMask {
                 this.update(this.input.selectionStart + 1);
                 return false;
             }
-            else if (dd === "29" && mm === "02" && (yyyy && yyyy%4 !== 0)) return false;
+            else if (dd === "29" && mm === "02" && (yyyy && yyyy%4 !== 0)) {
+                let ddMax = "28";
+                this.currentValue = this.currentValue.replaceAt(0, ddMax[0]);
+                this.currentValue = this.currentValue.replaceAt(1, ddMax[1]);
+                this.update(this.input.selectionStart + 1);
+                return false;
+            }
             else if ((dd !== "29" && mm !== "02") && dd > this.monthRules[mm - 1]) {
                 let ddMax = "" + this.monthRules[mm - 1];
                 this.currentValue = this.currentValue.replaceAt(0, ddMax[0]);
@@ -157,7 +167,6 @@ class DateMask extends InputMask {
                 return false;
             }
             else if (dd === "29" && mm === "02" && (yyyy && yyyy%4 !== 0)) {
-                console.log(dd, mm, yyyy);
                 let ddMax = "28";
                 this.currentValue = this.currentValue.replaceAt(0, ddMax[0]);
                 this.currentValue = this.currentValue.replaceAt(1, ddMax[1]);
@@ -222,7 +231,6 @@ class DateMask extends InputMask {
         }
         if (yyyy < this.minYear) {
             let yyyyMin = "" + this.minYear;
-            console.log(yyyyMin.length);
             for (let i = 0; i < yyyyMin.length; i++) {
                 this.currentValue = this.currentValue.replaceAt(yearStart - 1 + i, yyyyMin[i]);
             }
