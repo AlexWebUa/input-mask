@@ -20,7 +20,7 @@ class DateMask extends InputMask {
         properties.oldFormat ? this.oldFormat = properties.oldFormat : this.oldFormat = false;
         properties.format ? this.format = properties.format : this.format = "ДД.ММ.ГГГГ";
 
-        this.currentValue = this.format;
+        this.currentValue = properties.currentValue ? properties.currentValue : this.format;
         this.monthRules = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
         this.update(0);
     }

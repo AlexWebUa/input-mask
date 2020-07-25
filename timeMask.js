@@ -7,7 +7,7 @@ class TimeMask extends InputMask {
         properties.allowSeconds ? this.allowSeconds = properties.allowSeconds : this.allowSeconds = false;
         properties.format ? this.format = properties.format : this.format = "ЧЧ:ММ";
 
-        this.currentValue = this.format;
+        this.currentValue = properties.currentValue ? properties.currentValue : this.format;
         this.update(0);
     }
 
@@ -25,12 +25,16 @@ class TimeMask extends InputMask {
         if (index >= 0 && index < this.format.length) {
             let currentChar = this.format[index].toLowerCase();
             if (isDecimal(char)) {
-                if (currentChar === 'ч' || currentChar === 'м' || currentChar === 'с') {
+                if (currentChar === 'ч' || currentChar === 'м' || currentChar === 'с' ||
+                    currentChar === 'h' || currentChar === 'm' || currentChar === 's') {
                     let correct = true;
                     switch (currentChar) {
-                        case "ч": correct = this.controlHours(parseInt(char), index); break;
-                        case "м": correct = this.controlMinutes(parseInt(char), index); break;
-                        case "с": correct = this.controlSeconds(parseInt(char), index); break;
+                        case "ч": case "h":
+                            correct = this.controlHours(parseInt(char), index); break;
+                        case "м": case "m":
+                            correct = this.controlMinutes(parseInt(char), index); break;
+                        case "с": case "s":
+                            correct = this.controlSeconds(parseInt(char), index); break;
                     }
 
                     if(correct) {
