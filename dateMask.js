@@ -51,7 +51,7 @@ class DateMask extends InputMask {
                         this.update(index+1);
                     }
                     else {
-                        this.update(index);
+                        this.update(this.input.selectionStart - 1);
                     }
                 }
                 else if (currentChar === this.format[2]) {
@@ -105,6 +105,7 @@ class DateMask extends InputMask {
                 let ddMax = "01";
                 this.currentValue = this.currentValue.replaceAt(0, ddMax[0]);
                 this.currentValue = this.currentValue.replaceAt(1, ddMax[1]);
+                this.update(this.input.selectionStart + 1);
                 return false;
             }
             else if (dd === "29" && mm === "02" && (yyyy && yyyy%4 !== 0)) return false;
@@ -112,12 +113,14 @@ class DateMask extends InputMask {
                 let ddMax = "" + this.monthRules[mm - 1];
                 this.currentValue = this.currentValue.replaceAt(0, ddMax[0]);
                 this.currentValue = this.currentValue.replaceAt(1, ddMax[1]);
+                this.update(this.input.selectionStart + 1);
                 return false;
             }
             else if (dd > 31) {
                 let ddMax = "31";
                 this.currentValue = this.currentValue.replaceAt(0, ddMax[0]);
                 this.currentValue = this.currentValue.replaceAt(1, ddMax[1]);
+                this.update(this.input.selectionStart + 1);
                 return false;
             }
         }
@@ -150,6 +153,7 @@ class DateMask extends InputMask {
                 let mmMax = "01";
                 this.currentValue = this.currentValue.replaceAt(3, mmMax[0]);
                 this.currentValue = this.currentValue.replaceAt(4, mmMax[1]);
+                this.update(this.input.selectionStart + 1);
                 return false;
             }
             else if (dd === "29" && mm === "02" && (yyyy && yyyy%4 !== 0)) {
@@ -157,6 +161,7 @@ class DateMask extends InputMask {
                 let ddMax = "28";
                 this.currentValue = this.currentValue.replaceAt(0, ddMax[0]);
                 this.currentValue = this.currentValue.replaceAt(1, ddMax[1]);
+                this.update(this.input.selectionStart + 1);
                 return false;
             }
             else if ((dd !== "29" && mm !== "02") && dd > this.monthRules[mm - 1]) {
@@ -168,6 +173,7 @@ class DateMask extends InputMask {
                 let mmMax = "12";
                 this.currentValue = this.currentValue.replaceAt(3, mmMax[0]);
                 this.currentValue = this.currentValue.replaceAt(4, mmMax[1]);
+                this.update(this.input.selectionStart + 1);
                 return false;
             }
         }

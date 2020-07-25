@@ -38,7 +38,7 @@ class TimeMask extends InputMask {
                         this.update(index+1);
                     }
                     else {
-                        this.update(index);
+                        this.update(this.input.selectionStart - 1);
                     }
                 }
                 else if (currentChar === this.format[2]) {
@@ -86,12 +86,14 @@ class TimeMask extends InputMask {
                let hhMax = "01";
                this.currentValue = this.currentValue.replaceAt(0, hhMax[0]);
                this.currentValue = this.currentValue.replaceAt(1, hhMax[1]);
+               this.update(this.input.selectionStart + 1);
                return false;
            }
            else if (hh > 24) {
                let hhMax = "23";
                this.currentValue = this.currentValue.replaceAt(0, hhMax[0]);
                this.currentValue = this.currentValue.replaceAt(1, hhMax[1]);
+               this.update(this.input.selectionStart + 1);
                return false;
            }
         }
@@ -122,6 +124,7 @@ class TimeMask extends InputMask {
                 let mmMax = "01";
                 this.currentValue = this.currentValue.replaceAt(3, mmMax[0]);
                 this.currentValue = this.currentValue.replaceAt(4, mmMax[1]);
+                this.update(this.input.selectionStart + 1);
                 return false;
             }
             else if (mm > 60) {
@@ -158,6 +161,7 @@ class TimeMask extends InputMask {
                 let ssMax = "01";
                 this.currentValue = this.currentValue.replaceAt(6, ssMax[0]);
                 this.currentValue = this.currentValue.replaceAt(7, ssMax[1]);
+                this.update(this.input.selectionStart + 1);
                 return false;
             }
             else if (ss > 60) {
