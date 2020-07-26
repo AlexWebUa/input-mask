@@ -86,14 +86,7 @@ class TimeMask extends InputMask {
         }
 
         if (hh) {
-           if (hh === "00") {
-               let hhMax = "01";
-               this.currentValue = this.currentValue.replaceAt(0, hhMax[0]);
-               this.currentValue = this.currentValue.replaceAt(1, hhMax[1]);
-               this.update(this.input.selectionStart + 1);
-               return false;
-           }
-           else if (hh > 24) {
+           if (hh > 24) {
                let hhMax = "23";
                this.currentValue = this.currentValue.replaceAt(0, hhMax[0]);
                this.currentValue = this.currentValue.replaceAt(1, hhMax[1]);
@@ -124,19 +117,12 @@ class TimeMask extends InputMask {
         }
 
         if (mm) {
-            if (mm === "00") {
-                let mmMax = "01";
-                this.currentValue = this.currentValue.replaceAt(3, mmMax[0]);
-                this.currentValue = this.currentValue.replaceAt(4, mmMax[1]);
-                this.update(this.input.selectionStart + 1);
-                return false;
-            }
-            else if (mm > 60) {
+           if (mm > 60) {
                 let mmMax = "59";
                 this.currentValue = this.currentValue.replaceAt(3, mmMax[0]);
                 this.currentValue = this.currentValue.replaceAt(4, mmMax[1]);
                 return false;
-            }
+           }
         }
 
         return true;
@@ -161,14 +147,7 @@ class TimeMask extends InputMask {
         }
 
         if (ss) {
-            if (ss === "00") {
-                let ssMax = "01";
-                this.currentValue = this.currentValue.replaceAt(6, ssMax[0]);
-                this.currentValue = this.currentValue.replaceAt(7, ssMax[1]);
-                this.update(this.input.selectionStart + 1);
-                return false;
-            }
-            else if (ss > 60) {
+            if (ss > 60) {
                 let ssMax = "59";
                 this.currentValue = this.currentValue.replaceAt(6, ssMax[0]);
                 this.currentValue = this.currentValue.replaceAt(7, ssMax[1]);
