@@ -16,6 +16,8 @@ class InputMask {
         if (properties.id) {
             this.input = document.getElementById(properties.id);
             properties.format ? this.format = properties.format : null;
+            this.showFiller = properties.showFiller ? properties.showFiller : false;
+            this.filler = properties.filler ? properties.filler : "_";
 
             this.currentValue = this.format;
 
@@ -106,7 +108,7 @@ class InputMask {
      * @return {boolean}
      */
     isEmpty() {
-        return this.input.value === this.format;
+        return this.currentValue === this.format;
     }
 
     /**
@@ -115,7 +117,16 @@ class InputMask {
      * @param {number} index Куда встанет курсор после обновления
      */
     update(index) {
-        this.input.value = this.currentValue;
+        if (!this.isEmpty() && this.showFiller) {
+            this.input.value = '';
+            for (let i = 0; i < this.currentValue.toString().length; i++) {
+                this.input.value += isChar(this.currentValue[i]) ? this.filler : this.currentValue[i];
+            }
+        }
+        else this.input.value = this.currentValue;
+
+
+        //this.input.value = this.currentValue;
         this.input.selectionStart = index;
         this.input.selectionEnd = index;
     }

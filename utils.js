@@ -61,3 +61,13 @@ function isUndefined(item) {
 function isDecimal(number) {
     return new RegExp(/^\d+$/).test(number);
 }
+
+/**
+ * Проверяет является ли даная переменная буквой
+ *
+ * @param char
+ * @return {boolean}
+ */
+function isChar(char) {
+    return new RegExp(/[a-zA-Z]|[а-яА-Я]/).test(char);
+}
