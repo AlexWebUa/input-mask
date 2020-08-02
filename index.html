@@ -33,7 +33,7 @@
     const dateMask = new DateMask({
         id: "dateInput",
         format: "DD.MM.YYYY",
-        currentValue: "21.12.2001"
+        showFiller: true
     });
     const dateButton = document.getElementById("dateButton");
     const dateResult = document.getElementById("dateResult");
@@ -44,7 +44,8 @@
 
     const timeMask = new TimeMask({
         id: "timeInput",
-        format: "ЧЧ:ММ:СС"
+        format: "ЧЧ:ММ:СС",
+        showFiller: true
     });
     const timeButton = document.getElementById("timeButton");
     const timeResult = document.getElementById("timeResult");

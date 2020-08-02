@@ -37,6 +37,7 @@ class InputMask {
             this.input.onclick = null;
         };
         this.input.oninput = event => this.keyPress(event);
+        this.input.onpaste = event => this.pasteText(event);
     }
 
     /**
@@ -62,6 +63,16 @@ class InputMask {
      * @param {String} char
      */
     insertText(char) {}
+
+    /**
+     * Определяет поведение маски при вставке текста из буфера обмена
+     *
+     * @param event
+     */
+    pasteText(event) {
+        let text = event.clipboardData.getData("text");
+        this.setDate(text);
+    }
 
     /**
      * Определяет поведение маски при нажатии "Backspace"
